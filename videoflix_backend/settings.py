@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'videoflix.apps.VideoflixConfig',
-    'debug_toolbar'
+    'debug_toolbar',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,14 @@ CACHES = {
         "KEY_PREFIX": "videoflix"
         }
     }
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        # 'USERNAME': 'some-user',
+        'PASSWORD': 'foo!bared',
+        'DEFAULT_TIMEOUT': 360
+    }
+}
