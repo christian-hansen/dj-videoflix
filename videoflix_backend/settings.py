@@ -46,8 +46,11 @@ INSTALLED_APPS = [
     'videoflix.apps.VideoflixConfig',
     'debug_toolbar',
     'django_rq',
-    'import_export'
+    'import_export',
+    'users'
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',

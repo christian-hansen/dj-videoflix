@@ -100,3 +100,6 @@ run_both.sh
 run_server.sh
 run_worker.sh
 run_export.sh
+
+#Media
+/media
