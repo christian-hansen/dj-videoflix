@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_rq',
     'import_export',
-    'users'
+    'users',
+    'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -164,3 +166,8 @@ RQ_QUEUES = {
         'DEFAULT_TIMEOUT': 360
     }
 }
+
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:4200",  
+# ]
