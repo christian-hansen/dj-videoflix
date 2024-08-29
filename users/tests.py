@@ -1,7 +1,6 @@
 from django.test import TestCase, Client
 from rest_framework.test import APIClient
 from rest_framework.authtoken.models import Token  # Import Token model
-# from django.contrib.auth.models import User
 from users.models import CustomUser
 from users.serializers import UserItemSerializer
 from rest_framework import status

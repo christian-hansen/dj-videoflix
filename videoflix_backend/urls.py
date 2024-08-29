@@ -19,11 +19,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from debug_toolbar.toolbar import debug_toolbar_urls
 from users.views import ListUsers, LoginView, RegisterView
+from videoflix.views import ListVideos
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/login/', LoginView.as_view()),
     path('api/v1/register/', RegisterView.as_view()),
-    path('django-rq/', include('django_rq.urls')),
     path('api/v1/users/', ListUsers.as_view()),
+    path('api/v1/videos/', ListVideos.as_view()),
+    path('django-rq/', include('django_rq.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()

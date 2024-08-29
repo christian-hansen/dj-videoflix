@@ -1,5 +1,5 @@
 from .models import Video
-from .tasks import convert_360p
+from .tasks import convert_video
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 import os
@@ -19,7 +19,10 @@ def video_post_save(sender, instance, created, **kwargs):
         # print(video_path)
         queue = django_rq.get_queue('default', autocommit=True)
         # print('Start queue')
-        queue.enqueue(convert_360p, video_path)
+        # Enqueue tasks for 360p, 720p, and 1080p
+        queue.enqueue(convert_video, video_path, '360p')
+        queue.enqueue(convert_video, video_path, '720p')
+        queue.enqueue(convert_video, video_path, '1080p')
         # print('Finished queue')
        
 
@@ -27,12 +30,24 @@ def video_post_save(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Deletes the video file from the filesystem
-    when corresponding 'Video' object uis deleted.
+    Deletes the video file and its converted versions from the filesystem
+    when the corresponding 'Video' object is deleted.
     """
     if instance.video_file:
-        if os.path.isfile(instance.video_file.path):
-            os.remove(instance.video_file.path)
-            # os.remove(instance.video_file.path) #TODO 360p
-            # os.remove(instance.video_file.path) #TODO 720p
-            # os.remove(instance.video_file.path) #TODO 1080p
+        video_path = instance.video_file.path
+
+        # List of resolutions
+        resolutions = ['360p', '720p', '1080p']
+
+        # Delete the original file
+        if os.path.isfile(video_path):
+            os.remove(video_path)
+
+        # TODO Delete Thumbnail
+        
+        # Delete the converted files
+        for resolution in resolutions:
+            converted_file_path = f"{os.path.splitext(video_path)[0]}_{resolution}.mp4"
+            print('Deleting, ', converted_file_path)
+            if os.path.isfile(converted_file_path):
+                os.remove(converted_file_path)
