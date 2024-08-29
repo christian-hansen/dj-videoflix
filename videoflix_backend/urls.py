@@ -26,6 +26,6 @@ urlpatterns = [
     path('api/v1/login/', LoginView.as_view()),
     path('api/v1/register/', RegisterView.as_view()),
     path('api/v1/users/', ListUsers.as_view()),
-    path('api/v1/videos/', ListVideos.as_view()),
+    path('api/v1/videos/', ListVideos.as_view(), name='video-list'),
     path('django-rq/', include('django_rq.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()
