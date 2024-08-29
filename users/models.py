@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from videoflix.models import Video
 
 # Create your models here.
 class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=500)
+    favorites = models.ManyToManyField(Video, blank=True, related_name='favorited_by')
     phone = models.CharField(max_length=15, blank=True, null=True)
     custom = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)   

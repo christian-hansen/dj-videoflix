@@ -95,7 +95,7 @@ db.sqlite3
 
 #Shell scripts
 migrate.sh
-test.sh
+run_test.sh
 run_both.sh
 run_server.sh
 run_worker.sh
