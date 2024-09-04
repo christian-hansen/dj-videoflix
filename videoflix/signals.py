@@ -35,6 +35,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     if instance.video_file:
         video_path = instance.video_file.path
+        thumbnail_path = instance.thumbnail_file.path
 
         # List of resolutions
         resolutions = ['360p', '720p', '1080p']
@@ -42,6 +43,10 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         # Delete the original file
         if os.path.isfile(video_path):
             os.remove(video_path)
+        
+        # Delete the thumbnail file
+        if os.path.isfile(thumbnail_path):
+            os.remove(thumbnail_path)
 
         # TODO Delete Thumbnail
         
