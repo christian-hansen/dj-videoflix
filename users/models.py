@@ -6,10 +6,7 @@ from videoflix.models import Video
 class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=500)
-    favorites = models.ManyToManyField(Video, blank=True, related_name='favorited_by')
-    phone = models.CharField(max_length=15, blank=True, null=True)
-    custom = models.CharField(max_length=100, blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)   
+    # favorites = models.ManyToManyField(Video, blank=True, related_name='favorited_by')
     
     def __str__(self) -> str:
         return f'({self.id}) - {self.username} - {self.first_name} {self.last_name}'
