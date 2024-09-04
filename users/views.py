@@ -73,8 +73,8 @@ class RegisterView(APIView):
         try:
             # Create the user
             user = CustomUser.objects.create_user(
-            username=username, email=email, password=password, first_name=first_name, last_name=last_name)
+            username=username, email=email, password=password, first_name=first_name, last_name=last_name, is_active=False)
 
-            return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
+            return Response({"message": "User created successfully. But needs activation"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
