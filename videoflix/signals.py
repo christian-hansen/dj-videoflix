@@ -47,8 +47,6 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         # Delete the thumbnail file
         if os.path.isfile(thumbnail_path):
             os.remove(thumbnail_path)
-
-        # TODO Delete Thumbnail
         
         # Delete the converted files
         for resolution in resolutions:
