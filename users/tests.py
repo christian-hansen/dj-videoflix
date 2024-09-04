@@ -3,6 +3,7 @@ from users.models import CustomUser
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.core import mail
 
 # Create your tests here.
 class LoginTest(TestCase):
@@ -10,23 +11,32 @@ class LoginTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            username='test_user', password='test_password', email='test@example.com')
+        self.active_user = CustomUser.objects.create_user(
+            username='active_user', password='test_password', email='active@example.com', is_active=True)
+        self.inactive_user = CustomUser.objects.create_user(
+            username='inactive_user', password='test_password', email='inactive@example.com', is_active=False)
 
     def test_login_success(self):
-        # Test successful login
+        # Test successful login for an active user
         response = self.client.post(
-            '/api/v1/login/', {'username': 'test_user', 'password': 'test_password'})
+            '/api/v1/login/', {'username': 'active_user', 'password': 'test_password'})
         self.assertEqual(response.status_code, 200)
         self.assertTrue('token' in response.data)
         self.assertTrue('user_id' in response.data)
         self.assertTrue('email' in response.data)
 
+    def test_login_inactive_user(self):
+        # Test login for an inactive user
+        response = self.client.post(
+            '/api/v1/login/', {'username': 'inactive_user', 'password': 'test_password'})
+        self.assertEqual(response.status_code, 403)  # Expecting 403 Forbidden
+        self.assertIn('error', response.data)
+        self.assertEqual(response.data['error'], 'This account is inactive. Please activate your account.')
+
     def test_login_failure(self):
         # Test failed login with incorrect password
         response = self.client.post(
-            '/api/v1/login/', {'username': 'test_user', 'password': 'wrong_password'})
-        # Expecting 400 Bad Request for failed login
+            '/api/v1/login/', {'username': 'active_user', 'password': 'wrong_password'})
         self.assertEqual(response.status_code, 400)
 
         # Test failed login with non-existent user
@@ -37,13 +47,12 @@ class LoginTest(TestCase):
     def test_login_missing_credentials(self):
         # Test login with missing credentials
         response = self.client.post(
-            '/api/v1/login/', {'username': 'test_user'})
-        # Expecting 400 Bad Request for missing password
+            '/api/v1/login/', {'username': 'active_user'})
         self.assertEqual(response.status_code, 400)
 
     def test_logout_view(self):
+        # Assuming you have a logout view that handles token deletion
         response = self.client.get('/logout')
-        # Check if the user is logged out
         self.assertFalse('_auth_user_id' in self.client.session)
 
 class RegisterViewTest(TestCase):
@@ -58,7 +67,12 @@ class RegisterViewTest(TestCase):
             '/api/v1/register/', {'username': 'new_user', 'email': 'new_user@example.com', 'first_name': 'first_name', 'last_name': 'last_name', 'password': 'new_password'})
         self.assertEqual(response.status_code, 201)
         # Check if user is created
-        self.assertEqual(CustomUser.objects.filter(username='new_user').count(), 1)
+        user = CustomUser.objects.get(username='new_user')
+        self.assertEqual(user.is_active, False)  # The user should be inactive
+
+        # Check that an email has been sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('Activate your account', mail.outbox[0].subject)
 
     def test_register_existing_username(self):
         # Test registration with existing username
@@ -66,7 +80,6 @@ class RegisterViewTest(TestCase):
             username='existing_user', email='existing@example.com', first_name='first_name', last_name='last_name', password='existing_password')
         response = self.client.post(
             '/api/v1/register/', {'username': 'existing_user', 'email': 'another@example.com', 'first_name': 'first_name', 'last_name': 'last_name', 'password': 'new_password'})
-        # Expecting 400 Bad Request for existing username
         self.assertEqual(response.status_code, 400)
 
     def test_register_existing_email(self):
@@ -75,17 +88,30 @@ class RegisterViewTest(TestCase):
             username='another_user', email='existing@example.com', password='another_password')
         response = self.client.post(
             '/api/v1/register/', {'username': 'new_user', 'email': 'existing@example.com', 'password': 'new_password'})
-        # Expecting 400 Bad Request for existing email
         self.assertEqual(response.status_code, 400)
 
     def test_register_missing_fields(self):
         # Test registration with missing fields
         response = self.client.post(
             '/api/v1/register/', {'username': 'new_user', 'email': 'new_user@example.com'})
-        # Expecting 400 Bad Request for missing password
         self.assertEqual(response.status_code, 400)
-        
 
+    def test_account_activation(self):
+        # Test activating a newly registered account
+        user = CustomUser.objects.create_user(
+            username='inactive_user', email='inactive@example.com', password='password', is_active=False)
+        
+        # Generate the token and uidb64 for the user
+        token = default_token_generator.make_token(user)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Simulate clicking the activation link
+        response = self.client.get(f'/api/v1/activate/{uidb64}/{token}/')
+        self.assertEqual(response.status_code, 200)
+
+        # Refresh user from DB and check if activated
+        user.refresh_from_db()
+        self.assertTrue(user.is_active)  # User should now be active
 
 class PasswordResetTest(TestCase):
 
