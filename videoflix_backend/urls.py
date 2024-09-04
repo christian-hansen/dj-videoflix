@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from debug_toolbar.toolbar import debug_toolbar_urls
-from users.views import ListUsers, LoginView, RegisterView
+from users.views import ListUsers, LoginView, RegisterView, SetNewPasswordView, PasswordResetRequestView
 from videoflix.views import ListVideos
 
 urlpatterns = [
@@ -27,5 +27,7 @@ urlpatterns = [
     path('api/v1/register/', RegisterView.as_view()),
     path('api/v1/users/', ListUsers.as_view()),
     path('api/v1/videos/', ListVideos.as_view(), name='video-list'),
+    path('api/v1/password-reset/', PasswordResetRequestView.as_view(), name='password-reset'),
+    path('api/v1/reset-password/<uidb64>/<token>/', SetNewPasswordView.as_view(), name='reset-password'),
     path('django-rq/', include('django_rq.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()

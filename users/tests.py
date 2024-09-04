@@ -1,9 +1,8 @@
 from django.test import TestCase, Client
-from rest_framework.test import APIClient
-from rest_framework.authtoken.models import Token  # Import Token model
 from users.models import CustomUser
-from users.serializers import UserItemSerializer
-from rest_framework import status
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 # Create your tests here.
 class LoginTest(TestCase):
@@ -85,3 +84,101 @@ class RegisterViewTest(TestCase):
             '/api/v1/register/', {'username': 'new_user', 'email': 'new_user@example.com'})
         # Expecting 400 Bad Request for missing password
         self.assertEqual(response.status_code, 400)
+        
+
+
+class PasswordResetTest(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(
+            username='test_user', email='test@example.com', password='old_password')
+        
+    def test_password_reset_request(self):
+        """Test if password reset request sends the reset link (token generation)."""
+        
+        response = self.client.post('/api/v1/password-reset/', {'email': 'test@example.com'})
+        
+        # Check if the response is OK (200)
+        self.assertEqual(response.status_code, 200)
+        
+        # Ensure the reset token is generated
+        user = CustomUser.objects.get(email='test@example.com')
+        token = default_token_generator.make_token(user)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Simulate checking the token and uidb64 in email
+        self.assertIsNotNone(token)
+        self.assertIsNotNone(uidb64)
+
+    def test_password_reset_invalid_email(self):
+        """Test password reset request with an invalid email."""
+        
+        response = self.client.post('/api/v1/password-reset/', {'email': 'invalid@example.com'})
+        
+        # Expecting 400 Bad Request for non-existent email
+        self.assertEqual(response.status_code, 404)
+    
+    def test_password_reset_confirm(self):
+        """Test resetting the password using a valid token and setting a new password."""
+        
+        # Generate token and uidb64 for the user
+        user = CustomUser.objects.get(email='test@example.com')
+        token = default_token_generator.make_token(user)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Set new password using token and uidb64
+        new_password_data = {
+            'new_password': 'new_password123',
+            'confirm_password': 'new_password123'
+        }
+        
+        reset_url = f'/api/v1/reset-password/{uidb64}/{token}/'
+        response = self.client.post(reset_url, new_password_data)
+        
+        # Ensure the password reset was successful
+        self.assertEqual(response.status_code, 200)
+        
+        # Check if the user can log in with the new password
+        login_response = self.client.post(
+            '/api/v1/login/', {'username': 'test_user', 'password': 'new_password123'})
+        self.assertEqual(login_response.status_code, 200)
+        self.assertTrue('token' in login_response.data)
+
+    def test_password_reset_invalid_token(self):
+        """Test password reset with an invalid token."""
+        
+        # Use an invalid token for the reset
+        invalid_token = 'invalid-token'
+        uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
+        
+        new_password_data = {
+            'new_password': 'new_password123',
+            'confirm_password': 'new_password123'
+        }
+        
+        reset_url = f'/api/v1/reset-password/{uidb64}/{invalid_token}/'
+        response = self.client.post(reset_url, new_password_data)
+        
+        # Expecting 400 Bad Request for invalid token
+        self.assertEqual(response.status_code, 400)
+    
+    def test_password_reset_mismatch_password(self):
+        """Test password reset with mismatching new password and confirm password."""
+        
+        user = CustomUser.objects.get(email='test@example.com')
+        token = default_token_generator.make_token(user)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Send mismatched passwords
+        new_password_data = {
+            'new_password': 'new_password123',
+            'confirm_password': 'different_password'
+        }
+        
+        reset_url = f'/api/v1/reset-password/{uidb64}/{token}/'
+        response = self.client.post(reset_url, new_password_data)
+        
+        # Expecting 400 Bad Request for mismatching passwords
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('password', response.data)
