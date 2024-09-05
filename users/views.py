@@ -7,10 +7,9 @@ from users.models import CustomUser
 from users.serializers import UserItemSerializer, SetNewPasswordSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.core.mail import send_mail
+from django.core.mail import send_mail, BadHeaderError
 from django.utils.encoding import force_bytes
 from django.contrib.auth import authenticate
 
@@ -73,8 +72,6 @@ class LoginView(ObtainAuthToken):
 
 
 class RegisterView(APIView):
-    """ View to register a user including error responses. """
-
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         first_name = request.data.get('first_name')
@@ -102,14 +99,27 @@ class RegisterView(APIView):
             activation_link = f"{request.scheme}://{request.get_host()}/api/v1/activate/{uidb64}/{token}/"
 
             # Send activation email
-            send_mail(
-                subject="Activate your account",
-                message=f"Click the link to activate your account: {activation_link}",
-                from_email="noreply@yourapp.com",
-                recipient_list=[email],
-            )
+            try:
+                send_mail(
+                    subject="Activate your account",
+                    message=(
+                        f"Hi {user.first_name} {user.last_name},\n\n"
+                        "Thank you for registering. Please click the link below to activate your account:\n\n"
+                        f"{activation_link}\n\n"
+                        "If you did not request this registration, please ignore this email.\n\n"
+                        "Best regards,\n"
+                        "Your Videoflix Team"
+                        ),
+                    from_email=None, # This will use DEFAULT_FROM_EMAIL from settings.py
+                    recipient_list=[email],
+                )
+            except BadHeaderError:
+                return Response({"error": "Invalid header found."}, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             return Response({"message": "User created successfully. Check your email for activation link."}, status=status.HTTP_201_CREATED)
+        
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

@@ -171,3 +171,12 @@ RQ_QUEUES = {
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:4200",  
 # ]
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'w0112d87.kasserver.com'  # Your SMTP host (e.g., Gmail, Mailgun, etc.)
+EMAIL_PORT = 587  # Usually 587 for TLS
+EMAIL_USE_TLS = True  # Enable TLS (use True or False depending on your email provider)
+EMAIL_HOST_USER = 'test@videoflix.christian-hansen.dev'  # TODO CHANGE LATER
+EMAIL_HOST_PASSWORD = 'Rqn7PurNTH6W2aDd2wY8'  # Your email password
+DEFAULT_FROM_EMAIL = 'noreply@videoflix.christian-hansen.dev'
