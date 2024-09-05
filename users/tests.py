@@ -72,7 +72,7 @@ class RegisterViewTest(TestCase):
 
         # Check that an email has been sent
         self.assertEqual(len(mail.outbox), 1)
-        self.assertIn('Activate your account', mail.outbox[0].subject)
+        self.assertIn('Activate your Videoflix account', mail.outbox[0].subject)
 
     def test_register_existing_username(self):
         # Test registration with existing username
@@ -128,21 +128,33 @@ class PasswordResetTest(TestCase):
         # Check if the response is OK (200)
         self.assertEqual(response.status_code, 200)
         
+        # Check if an email has been sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('Videoflix Password Reset Request', mail.outbox[0].subject)
+        
+        # Extract the email content
+        email_body = mail.outbox[0].body
+        
         # Ensure the reset token is generated
         user = CustomUser.objects.get(email='test@example.com')
         token = default_token_generator.make_token(user)
         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
         
-        # Simulate checking the token and uidb64 in email
-        self.assertIsNotNone(token)
-        self.assertIsNotNone(uidb64)
+        # Verify the uidb64 and token are in the email body
+        self.assertIn(uidb64, email_body)
+        self.assertIn(token, email_body)
+        
+        # TODO Update with final link
+        # #Ensure the link to reset password contains the correct uidb64 and token
+        reset_link = f"http://your-frontend-domain.com/reset-password/{uidb64}/{token}/"
+        self.assertIn(reset_link, email_body)
 
     def test_password_reset_invalid_email(self):
         """Test password reset request with an invalid email."""
         
         response = self.client.post('/api/v1/password-reset/', {'email': 'invalid@example.com'})
         
-        # Expecting 400 Bad Request for non-existent email
+        # Expecting 404 Not Found for non-existent email
         self.assertEqual(response.status_code, 404)
     
     def test_password_reset_confirm(self):

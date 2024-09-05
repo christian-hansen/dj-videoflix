@@ -103,10 +103,11 @@ class RegisterView(APIView):
             activation_link = f"{
                 request.scheme}://{request.get_host()}/api/v1/activate/{uidb64}/{token}/"
 
+            # TODO Update with final content
             # Send activation email
             try:
                 send_mail(
-                    subject="Activate your account",
+                    subject="Activate your Videoflix account",
                     message=(
                         f"Hi {user.first_name} {user.last_name},\n\n"
                         "Thank you for registering. Please click the link below to activate your account:\n\n"
@@ -115,7 +116,7 @@ class RegisterView(APIView):
                         "Best regards,\n"
                         "Your Videoflix Team"
                     ),
-                    from_email=None,  # This will use DEFAULT_FROM_EMAIL from settings.py
+                    from_email=None,
                     recipient_list=[email],
                 )
             except BadHeaderError:
@@ -156,7 +157,23 @@ class PasswordResetRequestView(APIView):
         except CustomUser.DoesNotExist:
             return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Continue the process for password reset token generation...
+        # Generate password reset token and uidb64
+        token = default_token_generator.make_token(user)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+
+        # TODO Update with final link
+        # # Create the password reset link to the frontend
+        reset_link = f"http://your-frontend-domain.com/reset-password/{uidb64}/{token}/"
+
+        # TODO Update with final content
+        # Send password reset email
+        send_mail(
+            subject="Videoflix Password Reset Request",
+            message=f"Hi {user.first_name} {user.last_name},\n\nPlease click the link below to reset your password:\n{reset_link}\n\nIf you didn't request this, please ignore this email.",
+            from_email=None,  # Replace with your actual from_email
+            recipient_list=[email],
+        )
+
         return Response({"detail": "Password reset link sent."}, status=status.HTTP_200_OK)
 
 
