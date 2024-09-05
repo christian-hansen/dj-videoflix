@@ -14,20 +14,23 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth import authenticate
 
 # Create your views here.
+
+
 class ListUsers(APIView):
     """ View to load all users from the database. """
-    
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request, format=None):
-        users = CustomUser.objects.all() 
+        users = CustomUser.objects.all()
         serializer = UserItemSerializer(users, many=True)
         return Response(serializer.data)
 
+
 class CurrentUserView(APIView):
     """ View to load the current logged in user from the database. """
-    
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -36,6 +39,7 @@ class CurrentUserView(APIView):
         return Response({
             'id': user.id
         })
+
 
 class LoginView(ObtainAuthToken):
     """ View to login a user """
@@ -48,7 +52,7 @@ class LoginView(ObtainAuthToken):
         try:
             # Try to get the user from the database
             user = CustomUser.objects.get(username=username)
-            
+
             # Check if the user is inactive
             if not user.is_active:
                 return Response({"error": "This account is inactive. Please activate your account."},
@@ -66,7 +70,7 @@ class LoginView(ObtainAuthToken):
                 })
             else:
                 return Response({"error": "Invalid username or password."}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         except CustomUser.DoesNotExist:
             return Response({"error": "Invalid username or password."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -92,11 +96,12 @@ class RegisterView(APIView):
             # Create the user with is_active=False
             user = CustomUser.objects.create_user(
                 username=username, email=email, password=password, first_name=first_name, last_name=last_name, is_active=False)
-            
+
             # Generate activation token and send activation email
             token = default_token_generator.make_token(user)
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            activation_link = f"{request.scheme}://{request.get_host()}/api/v1/activate/{uidb64}/{token}/"
+            activation_link = f"{
+                request.scheme}://{request.get_host()}/api/v1/activate/{uidb64}/{token}/"
 
             # Send activation email
             try:
@@ -109,8 +114,8 @@ class RegisterView(APIView):
                         "If you did not request this registration, please ignore this email.\n\n"
                         "Best regards,\n"
                         "Your Videoflix Team"
-                        ),
-                    from_email=None, # This will use DEFAULT_FROM_EMAIL from settings.py
+                    ),
+                    from_email=None,  # This will use DEFAULT_FROM_EMAIL from settings.py
                     recipient_list=[email],
                 )
             except BadHeaderError:
@@ -119,9 +124,10 @@ class RegisterView(APIView):
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             return Response({"message": "User created successfully. Check your email for activation link."}, status=status.HTTP_201_CREATED)
-        
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ActivateAccountView(APIView):
     """ View to activate the user account when the user clicks the activation link """
@@ -141,6 +147,7 @@ class ActivateAccountView(APIView):
         else:
             return Response({"error": "Activation link is invalid or has expired."}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class PasswordResetRequestView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -148,15 +155,17 @@ class PasswordResetRequestView(APIView):
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
             return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
-        
+
         # Continue the process for password reset token generation...
         return Response({"detail": "Password reset link sent."}, status=status.HTTP_200_OK)
-    
+
+
 class SetNewPasswordView(APIView):
     """
     View to handle setting a new password without requiring the old password.
     This is used when a user forgets their password and resets it via a token.
     """
+
     def post(self, request, uidb64, token):
         try:
             # Decode the user id
