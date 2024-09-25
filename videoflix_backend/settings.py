@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -147,7 +148,7 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
-            "PASSWORD": 'foo!bared',
+            "PASSWORD": config('RQ_PASSWORD'),
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
             },
         "KEY_PREFIX": "videoflix"
@@ -160,7 +161,7 @@ RQ_QUEUES = {
         'PORT': 6379,
         'DB': 0,
         # 'USERNAME': 'some-user',
-        'PASSWORD': 'foo!bared',
+        'PASSWORD': config('RQ_PASSWORD'),
         'DEFAULT_TIMEOUT': 360
     }
 }
@@ -170,11 +171,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  
 ]
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'w0112d87.kasserver.com'  # Your SMTP host (e.g., Gmail, Mailgun, etc.)
-EMAIL_PORT = 587  # Usually 587 for TLS
-EMAIL_USE_TLS = True  # Enable TLS (use True or False depending on your email provider)
-EMAIL_HOST_USER = 'test@videoflix.christian-hansen.dev'  # TODO CHANGE LATER
-EMAIL_HOST_PASSWORD = 'Rqn7PurNTH6W2aDd2wY8'  # Your email password
-DEFAULT_FROM_EMAIL = 'noreply@videoflix.christian-hansen.dev'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
