@@ -163,7 +163,7 @@ class PasswordResetRequestView(APIView):
 
         # TODO Update with final link
         # # Create the password reset link to the frontend
-        reset_link = f"http://your-frontend-domain.com/reset-password/{uidb64}/{token}/"
+        reset_link = f"{request.scheme}://{request.get_host()}/api/v1/reset-password/{uidb64}/{token}/"
 
         # TODO Update with final content
         # Send password reset email
