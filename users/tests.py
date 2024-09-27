@@ -220,3 +220,40 @@ class PasswordResetTest(TestCase):
         # Expecting 400 Bad Request for mismatching passwords
         self.assertEqual(response.status_code, 400)
         self.assertIn('password', response.data)
+        
+class UsernameReminderTest(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(
+            username='test_user', email='test@example.com', password='test_password'
+        )
+    
+    def test_username_reminder_valid_email(self):
+        """Test if the username reminder email is sent when a valid email is provided."""
+
+        response = self.client.post('/api/v1/username-reminder/', {'email': 'test@example.com'})
+        
+        # Check if the response is OK (200)
+        self.assertEqual(response.status_code, 200)
+        
+        # Check if an email has been sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('Videoflix Username Reminder', mail.outbox[0].subject)
+        
+        # Extract the email content
+        email_body = mail.outbox[0].body
+        
+        # Verify the username is in the email body
+        self.assertIn(self.user.username, email_body)
+
+    def test_username_reminder_invalid_email(self):
+        """Test username reminder request with an invalid email."""
+        
+        response = self.client.post('/api/v1/username-reminder/', {'email': 'invalid@example.com'})
+        
+        # Expecting 404 Not Found for non-existent email
+        self.assertEqual(response.status_code, 404)
+        
+        # Ensure no email is sent
+        self.assertEqual(len(mail.outbox), 0)

@@ -175,6 +175,24 @@ class PasswordResetRequestView(APIView):
 
         return Response({"detail": "Password reset link sent."}, status=status.HTTP_200_OK)
 
+class UsernameRequestView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        # TODO Update with final content
+        # Send username reminder email
+        send_mail(
+            subject="Videoflix Username Reminder",
+            message=f"Hi {user.first_name} {user.last_name},\n\nYour username is {user.username}. If you need additional help please contact the administrator.",
+            from_email=None,  # Replace with your actual from_email
+            recipient_list=[email],
+        )
+
+        return Response({"detail": "Username reminder sent."}, status=status.HTTP_200_OK)
 
 class SetNewPasswordView(APIView):
     """
