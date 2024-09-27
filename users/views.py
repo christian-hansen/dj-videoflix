@@ -100,8 +100,7 @@ class RegisterView(APIView):
             # Generate activation token and send activation email
             token = default_token_generator.make_token(user)
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            activation_link = f"{
-                request.scheme}://{request.get_host()}/api/v1/activate/{uidb64}/{token}/"
+            activation_link = f"{request.scheme}://localhost:4200/activate/{uidb64}/{token}/"
 
             # TODO Update with final content
             # Send activation email
@@ -163,7 +162,7 @@ class PasswordResetRequestView(APIView):
 
         # TODO Update with final link
         # # Create the password reset link to the frontend
-        reset_link = f"{request.scheme}://{request.get_host()}/api/v1/reset-password/{uidb64}/{token}/"
+        reset_link = f"{request.scheme}://localhost:4200/reset-password/{uidb64}/{token}/"
 
         # TODO Update with final content
         # Send password reset email
