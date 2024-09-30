@@ -175,6 +175,7 @@ class PasswordResetRequestView(APIView):
 
         return Response({"detail": "Password reset link sent."}, status=status.HTTP_200_OK)
 
+
 class UsernameRequestView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -193,6 +194,7 @@ class UsernameRequestView(APIView):
         )
 
         return Response({"detail": "Username reminder sent."}, status=status.HTTP_200_OK)
+
 
 class SetNewPasswordView(APIView):
     """
