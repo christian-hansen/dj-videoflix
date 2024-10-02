@@ -1,15 +1,27 @@
 from rest_framework import serializers
-from videoflix.models import Video
+from videoflix.models import Video, Genre
 import os
+
+
+# Serializer for Genre
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ['id', 'name']
+
 
 class VideoItemSerializer(serializers.ModelSerializer):
     video_file_360p = serializers.SerializerMethodField()
     video_file_720p = serializers.SerializerMethodField()
     video_file_1080p = serializers.SerializerMethodField()
-
+    genre = serializers.SerializerMethodField()  # This will use the __str__ method of Genre
     class Meta:
         model = Video
-        fields = "__all__"
+        fields = ['id', 'video_file_360p', 'video_file_720p', 'video_file_1080p', 'title', 'description', 'created_at', 'video_file', 'thumbnail_file', 'genre']
+        
+    def get_genre(self, obj):
+        # Return the genre name, if genre is not None
+        return obj.genre.name if obj.genre else None
 
     def get_video_file_360p(self, obj):
         return self.get_converted_video_path(obj, '360p')
