@@ -14,7 +14,7 @@ class VideoItemSerializer(serializers.ModelSerializer):
     video_file_360p = serializers.SerializerMethodField()
     video_file_720p = serializers.SerializerMethodField()
     video_file_1080p = serializers.SerializerMethodField()
-    genre = serializers.SerializerMethodField()  # This will use the __str__ method of Genre
+    genre = serializers.SerializerMethodField()
     class Meta:
         model = Video
         fields = ['id', 'video_file_360p', 'video_file_720p', 'video_file_1080p', 'title', 'description', 'created_at', 'video_file', 'thumbnail_file', 'genre']
