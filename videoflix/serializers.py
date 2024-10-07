@@ -4,7 +4,7 @@ import os
 
 
 # Serializer for Genre
-class GenreSerializer(serializers.ModelSerializer):
+class GenreItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = ['id', 'name']

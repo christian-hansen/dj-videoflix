@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from debug_toolbar.toolbar import debug_toolbar_urls
 from users.views import ListUsers, LoginView, RegisterView, SetNewPasswordView, PasswordResetRequestView, ActivateAccountView, UsernameRequestView
-from videoflix.views import ListVideos
+from videoflix.views import ListVideos, ListGenres
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/v1/activate/<uidb64>/<token>/', ActivateAccountView.as_view(), name='activate-account'),
     path('api/v1/users/', ListUsers.as_view()),
     path('api/v1/videos/', ListVideos.as_view(), name='video-list'),
+    path('api/v1/genres/', ListGenres.as_view(), name='genre-list'),
     path('api/v1/password-reset/', PasswordResetRequestView.as_view(), name='password-reset'),
     path('api/v1/username-reminder/', UsernameRequestView.as_view(), name='username-reminder'),
     path('api/v1/reset-password/<uidb64>/<token>/', SetNewPasswordView.as_view(), name='reset-password'),

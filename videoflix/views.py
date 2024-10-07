@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.views.decorators.cache import cache_page
-from videoflix.models import Video
-from videoflix.serializers import VideoItemSerializer
+from videoflix.models import Video, Genre
+from videoflix.serializers import VideoItemSerializer, GenreItemSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -24,8 +24,8 @@ class ListVideos(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        tasks = Video.objects.all() 
-        serializer = VideoItemSerializer(tasks, many=True)
+        videos = Video.objects.all() 
+        serializer = VideoItemSerializer(videos, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -36,3 +36,23 @@ class ListVideos(APIView):
             serializer.save()  # Save the data to the database
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ListGenres(APIView):
+    """ View to load all videos from the database """
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        genres = Genre.objects.all() 
+        serializer = GenreItemSerializer(genres, many=True)
+        return Response(serializer.data)
+
+    # def post(self, request, format=None):
+    #     data = request.data.copy()  # Make a copy of the request data
+
+    #     serializer = GenreItemSerializer(data=data)
+    #     if serializer.is_valid():
+    #         serializer.save()  # Save the data to the database
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
