@@ -27,7 +27,8 @@ urlpatterns = [
     path('api/v1/register/', RegisterView.as_view(), name='register'),
     path('api/v1/activate/<uidb64>/<token>/', ActivateAccountView.as_view(), name='activate-account'),
     path('api/v1/users/', ListUsers.as_view()),
-    path('api/v1/videos/', ListVideos.as_view(), name='video-list'),
+    path('api/v1/videos/', ListVideos.as_view(), name='list-videos'),  # For listing all videos
+    path('api/v1/videos/<int:video_id>/', ListVideos.as_view(), name='get-video'),  # For getting a single video
     path('api/v1/genres/', ListGenres.as_view(), name='genre-list'),
     path('api/v1/password-reset/', PasswordResetRequestView.as_view(), name='password-reset'),
     path('api/v1/username-reminder/', UsernameRequestView.as_view(), name='username-reminder'),
