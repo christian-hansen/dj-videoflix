@@ -2,7 +2,7 @@ asgiref==3.8.1
 click==8.1.7
 coverage==7.6.1
 diff-match-patch==20230430
-Django==5.1
+Django==4.2.16
 django-cors-headers==4.4.0
 django-debug-toolbar==4.4.6
 django-import-export==4.1.1
