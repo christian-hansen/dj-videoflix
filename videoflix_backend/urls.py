@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from debug_toolbar.toolbar import debug_toolbar_urls
 from users.views import ListUsers, LoginView, RegisterView, SetNewPasswordView, PasswordResetRequestView, ActivateAccountView, UsernameRequestView
 from videoflix.views import ListVideos, ListGenres
+from videoflix_backend import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,4 +35,4 @@ urlpatterns = [
     path('api/v1/username-reminder/', UsernameRequestView.as_view(), name='username-reminder'),
     path('api/v1/reset-password/<uidb64>/<token>/', SetNewPasswordView.as_view(), name='reset-password'),
     path('django-rq/', include('django_rq.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()
+] + static(settings.STATIC_URL) + debug_toolbar_urls()
