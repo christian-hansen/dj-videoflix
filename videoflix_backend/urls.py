@@ -34,4 +34,4 @@ urlpatterns = [
     path('api/v1/username-reminder/', UsernameRequestView.as_view(), name='username-reminder'),
     path('api/v1/reset-password/<uidb64>/<token>/', SetNewPasswordView.as_view(), name='reset-password'),
     path('django-rq/', include('django_rq.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls() + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
