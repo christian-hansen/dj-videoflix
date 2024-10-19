@@ -168,7 +168,8 @@ RQ_QUEUES = {
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",  
+    "http://localhost:4200",
+    "35.246.145.159"  
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
