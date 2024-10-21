@@ -162,7 +162,7 @@ RQ_QUEUES = {
         'DB': 0,
         # 'USERNAME': 'some-user',
         'PASSWORD': config('RQ_PASSWORD'),
-        'DEFAULT_TIMEOUT': 360
+        'DEFAULT_TIMEOUT': 6000
     }
 }
 
