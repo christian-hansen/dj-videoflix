@@ -11,6 +11,7 @@ def convert_video(source, resolution):
     new_file_name = f"{file_name[0]}_{resolution}.mp4"
     
     cmd = [
+        'sudo',
         'ffmpeg',
         '-i', source,
         '-s', resolutions[resolution],

@@ -146,7 +146,7 @@ class PasswordResetTest(TestCase):
         
         # TODO Update with final link
         # #Ensure the link to reset password contains the correct uidb64 and token
-        reset_link = f"http://localhost:4200/reset-password/{uidb64}/{token}/"
+        reset_link = f"https://videoflix.christian-hansen.dev/reset-password/{uidb64}/{token}/"
         self.assertIn(reset_link, email_body)
 
     def test_password_reset_invalid_email(self):
