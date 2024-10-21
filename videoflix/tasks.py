@@ -4,7 +4,7 @@ def convert_video(source, resolution):
     resolutions = {
         '360p': '640x360',
         '720p': 'hd720',
-        '1080p': 'hd1080',
+        # '1080p': 'hd1080',
     }
 
     file_name = source.split('.')
