@@ -161,7 +161,7 @@ RQ_QUEUES = {
         'PORT': 6379,
         'DB': 0,
         # 'USERNAME': 'some-user',
-        'PASSWORD': "foo!bared",
+        'PASSWORD': config('RQ_PASSWORD'),
         'DEFAULT_TIMEOUT': 360
     }
 }
