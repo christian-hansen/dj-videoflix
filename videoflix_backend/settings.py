@@ -148,7 +148,7 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
-            "PASSWORD": config('RQ_PASSWORD'),
+            # "PASSWORD": config('RQ_PASSWORD'),
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
             },
         "KEY_PREFIX": "videoflix"
