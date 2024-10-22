@@ -19,10 +19,9 @@ def video_post_save(sender, instance, created, **kwargs):
         # print(video_path)
         queue = django_rq.get_queue('default', autocommit=True)
         # print('Start queue')
-        # Enqueue tasks for 360p, 720p, and 1080p
+        # Enqueue tasks for 360p, 720p
         queue.enqueue(convert_video, video_path, '360p')
         queue.enqueue(convert_video, video_path, '720p')
-        queue.enqueue(convert_video, video_path, '1080p')
         # print('Finished queue')
        
 
@@ -38,7 +37,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         thumbnail_path = instance.thumbnail_file.path
 
         # List of resolutions
-        resolutions = ['360p', '720p', '1080p']
+        resolutions = ['360p', '720p']
 
         # Delete the original file
         if os.path.isfile(video_path):

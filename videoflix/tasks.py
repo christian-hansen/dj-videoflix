@@ -3,8 +3,7 @@ import subprocess
 def convert_video(source, resolution):
     resolutions = {
         '360p': '640x360',
-        '720p': 'hd720',
-        # '1080p': 'hd1080',
+        '720p': 'hd720'
     }
 
     file_name = source.split('.')
