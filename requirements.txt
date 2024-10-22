@@ -13,6 +13,7 @@ django-rq==2.10.2
 djangorestframework==3.15.2
 gunicorn==23.0.0
 packaging==24.1
+psycopg2-binary==2.9.10
 python-decouple==3.8
 redis==5.0.8
 rq==1.16.2
