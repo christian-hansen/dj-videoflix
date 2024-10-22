@@ -13,11 +13,11 @@ class GenreItemSerializer(serializers.ModelSerializer):
 class VideoItemSerializer(serializers.ModelSerializer):
     video_file_360p = serializers.SerializerMethodField()
     video_file_720p = serializers.SerializerMethodField()
-    video_file_1080p = serializers.SerializerMethodField()
+    # video_file_1080p = serializers.SerializerMethodField()
     genre = serializers.SerializerMethodField()
     class Meta:
         model = Video
-        fields = ['id', 'video_file_360p', 'video_file_720p', 'video_file_1080p', 'title', 'description', 'created_at', 'video_file', 'thumbnail_file', 'genre']
+        fields = ['id', 'video_file_360p', 'video_file_720p', 'title', 'description', 'created_at', 'video_file', 'thumbnail_file', 'genre']
         
     def get_genre(self, obj):
         # Return the genre name, if genre is not None
@@ -29,8 +29,8 @@ class VideoItemSerializer(serializers.ModelSerializer):
     def get_video_file_720p(self, obj):
         return self.get_converted_video_path(obj, '720p')
 
-    def get_video_file_1080p(self, obj):
-        return self.get_converted_video_path(obj, '1080p')
+    # def get_video_file_1080p(self, obj):
+    #     return self.get_converted_video_path(obj, '1080p')
 
     def get_converted_video_path(self, obj, resolution):
         """
