@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dl_51z1d%pv29ttlk^m!+gg-i9cxc)n25p&)!-^p4%t--^d(-2'
+SECRET_KEY = config('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -96,11 +96,11 @@ WSGI_APPLICATION = 'videoflix_backend.wsgi.application'
 #}
 
 DATABASES = {
-     'default': {
+    'default': {
 	'ENGINE': 'django.db.backends.postgresql',
 	'NAME': 'videoflix',
-	'USER': '',
-	'PASSWORD': '',
+	'USER': config('PSQL_USER'),
+	'PASSWORD': config('PSQL_PW'),
 	'HOST': 'localhost',
 	'PORT': '',
      }
