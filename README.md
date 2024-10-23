@@ -19,15 +19,15 @@ This is a learning project created as part of my studies with the Developer Akad
     ```
 3. For security reasons secrets are stored separately. You need to create .env file in the main folder and enter the secrets (without []) to the following variables:
     ```bash
-    EMAIL_HOST=
-    EMAIL_PORT=
-    EMAIL_HOST_USER=
-    EMAIL_HOST_PASSWORD=
-    DEFAULT_FROM_EMAIL=
-    PSQL_USER=
-    PSQL_PW=
-    DJANGO_SECRET=
-    RQ_PASSWORD=
+    EMAIL_HOST=[]
+    EMAIL_PORT=[]
+    EMAIL_HOST_USER=[]
+    EMAIL_HOST_PASSWORD=[]
+    DEFAULT_FROM_EMAIL=[]
+    PSQL_USER=[]
+    PSQL_PW=[]
+    DJANGO_SECRET=[]
+    RQ_PASSWORD=[]
     ```
 4. Apply migrations:
     ```bash
