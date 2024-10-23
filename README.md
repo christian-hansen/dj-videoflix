@@ -24,10 +24,11 @@ This is a learning project created as part of my studies with the Developer Akad
     EMAIL_HOST_USER=[]
     EMAIL_HOST_PASSWORD=[]
     DEFAULT_FROM_EMAIL=[]
-    PSQL_USER=[]
-    PSQL_PW=[]
     DJANGO_SECRET=[]
     RQ_PASSWORD=[]
+     #Incase you use postgres database. If not make sure to update settings.py back to sqlite database.
+    PSQL_USER=[]
+    PSQL_PW=[]
     ```
 4. Apply migrations:
     ```bash
