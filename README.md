@@ -27,9 +27,9 @@ This is a learning project created as part of my studies with the Developer Akad
     DJANGO_SECRET=[]
     RQ_PASSWORD=[]
      #Incase you use postgres database. 
-     #If not make sure to update settings.py back to sqlite database.
     PSQL_USER=[]
     PSQL_PW=[]
+     #If not make sure to update settings.py back to sqlite database.
     ```
 4. Apply migrations:
     ```bash
