@@ -26,7 +26,8 @@ This is a learning project created as part of my studies with the Developer Akad
     DEFAULT_FROM_EMAIL=[]
     DJANGO_SECRET=[]
     RQ_PASSWORD=[]
-     #Incase you use postgres database. If not make sure to update settings.py back to sqlite database.
+     #Incase you use postgres database. 
+     #If not make sure to update settings.py back to sqlite database.
     PSQL_USER=[]
     PSQL_PW=[]
     ```
