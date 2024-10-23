@@ -17,22 +17,38 @@ This is a learning project created as part of my studies with the Developer Akad
     source env/bin/activate
     pip install -r requirements.txt
     ```
-3. Apply migrations:
+3. For security reasons secrets are stored separately. You need to create .env file in the main folder and enter the secrets (without []) to the following variables:
+    ```bash
+    EMAIL_HOST=
+    EMAIL_PORT=
+    EMAIL_HOST_USER=
+    EMAIL_HOST_PASSWORD=
+    DEFAULT_FROM_EMAIL=
+    PSQL_USER=
+    PSQL_PW=
+    DJANGO_SECRET=
+    RQ_PASSWORD=
+    ```
+4. Apply migrations:
     ```bash
     python manage.py makemigrations
     python manage.py migrate
     ```
-4. Create a Superuser
+5. Create a Superuser
     ```bash
     python manage.py createsuperuser
     ```
-5. Start the Django development server:
+6. Start the Django development server:
     ```bash
     python manage.py runserver
     ```
-6. Check URLS and Ports (Ensure the backend is running on port 8000, as some links may not work otherwise):
+7. Check URLS and Ports (Ensure the backend is running on port 8000, as some links may not work otherwise):
     ```bash
     open http://localhost:8000/admin
+    ```
+8. To convert videos after uploading the RQ Worker needs to be started:
+    ```bash
+    python manage.py rqworker default
     ```
 
 ## Running included tests
