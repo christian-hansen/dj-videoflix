@@ -87,10 +87,10 @@ class RegisterView(APIView):
             return Response({"error": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
 
         if CustomUser.objects.filter(username=username).exists():
-            return Response({"error": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Please enter another username."}, status=status.HTTP_400_BAD_REQUEST)
 
         if CustomUser.objects.filter(email=email).exists():
-            return Response({"error": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Please enter another email."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             # Create the user with is_active=False
@@ -154,7 +154,7 @@ class PasswordResetRequestView(APIView):
         try:
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
-            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Please enter different data."}, status=status.HTTP_404_NOT_FOUND)
 
         # Generate password reset token and uidb64
         token = default_token_generator.make_token(user)
@@ -182,7 +182,7 @@ class UsernameRequestView(APIView):
         try:
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
-            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Please enter different data."}, status=status.HTTP_404_NOT_FOUND)
 
         # TODO Update with final content
         # Send username reminder email
